@@ -166,6 +166,52 @@ const Tree = (arr) => {
         rebalanceTree();
     };
 
+    // Level Order Traversal
+    const levelOrder = (callback) => {
+        if (!root) return null;
+        const queue = [root];
+
+        while (queue.length) {
+            const curr = queue.shift();
+            callback(curr);
+            if (curr.left) queue.push(curr.left);
+            if (curr.right) queue.push(curr.right);
+        };
+    };
+
+    const reversedLevelOrder = (callback) => {
+        if (!root) return null;
+        const queue = [root];
+        const stack = [];
+
+        while (queue.length) {
+            const curr = queue.shift();
+            stack.push(curr);
+            if (curr.right) queue.push(curr.right);
+            if (curr.left) queue.push(curr.left);
+        };
+
+        while (stack.length) {
+            callback(stack.pop());
+        }
+    };
+
+    const isMirrored = (root) => {
+        if (!root) return false;
+
+        const isSymmetrical = (root1, root2) => {
+            if (!root1 && !root2) return true;
+
+            if (!root1 || !root2) return false;
+
+            if (root1.data !== root2.data) return false;
+
+            return isSymmetrical(root1.left, root2.right) && isSymmetrical(root1.right, root2.left);
+        };
+
+        return isSymmetrical(root.left, root.right);
+    };
+
     // Log Items in Order (LDR)
     const inOrder = (callback) => {
         const traverse = (node) => {
@@ -222,6 +268,7 @@ const Tree = (arr) => {
         insertItem,
         deleteItem,
         findItem,
+        levelOrder,
         inOrder,
         preOrder,
         postOrder,
@@ -232,8 +279,17 @@ const Tree = (arr) => {
     }
 };
 
-const testArr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
+const driverScript = () => {
+    const array = Array.from({ length: 20 }, () => Math.floor(Math.random() * 100));
+    const tree = Tree(array);
+    console.log(tree.isBalanced())
+    const newArray = Array.from({ length: 10 }, () => Math.floor(100 + (Math.random() * 100)));
+    console.table(newArray);
+    newArray.forEach(value => tree.insertItem(value));
+    console.log(tree.isBalanced());
+    tree.rebalanceTree();
+    console.log(tree.isBalanced());
+    tree.prettyPrint()
+};
 
-const tree = Tree(testArr);
-
-tree.prettyPrint();
+driverScript();
